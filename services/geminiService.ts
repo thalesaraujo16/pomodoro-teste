@@ -1,22 +1,16 @@
 
-import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
+// Note: removed usage of @google/genai SDK from client bundle to avoid
+// bundling server-only SDK into the browser. This returns a local
+// randomized study tip. Replace with a server-side call if you need real AI.
+const TIPS = [
+  'Divida as questões em blocos curtos e revise a cada ciclo.',
+  'Priorize os erros: refaça questões que você errou recentemente.',
+  'Use técnica Pomodoro: foco intenso e pausas programadas.',
+  'Explique a solução em voz alta; ensinar é aprender.',
+  'Comece pelas questões mais desafiadoras quando estiver fresco.'
+];
 
-// Always initialize with named parameter and direct process.env.API_KEY access
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
-export const getStudyTip = async (taskDescription?: string): Promise<string> => {
-  try {
-    // Calling generateContent directly with the model name as per guidelines
-    const response: GenerateContentResponse = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
-      contents: `Forneça uma dica rápida e motivadora de estudo ou resolução de questões em português. ${
-        taskDescription ? `O foco atual é: ${taskDescription}` : ""
-      }. Seja breve (máximo 2 frases).`,
-    });
-    // Use .text property directly (not as a method)
-    return response.text || "Continue focado! Cada questão resolvida é um passo rumo ao seu objetivo.";
-  } catch (error) {
-    console.error("Gemini Error:", error);
-    return "Mantenha o foco e a consistência nos estudos!";
-  }
+export const getStudyTip = async (_taskDescription?: string): Promise<string> => {
+  const idx = Math.floor(Math.random() * TIPS.length);
+  return TIPS[idx];
 };
