@@ -4,7 +4,9 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
+    const basePath = mode === 'development' ? '/' : (env.GH_PAGES_BASE || '/pomodoro-teste/');
     return {
+      base: basePath,
       server: {
         port: 3000,
         host: '0.0.0.0',
