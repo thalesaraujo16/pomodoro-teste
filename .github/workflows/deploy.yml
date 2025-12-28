@@ -26,8 +26,23 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Show generated index.html (first 200 lines)
+        run: sed -n '1,200p' dist/index.html
+
+      - name: Upload dist as artifact for inspection
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-artifact
+          path: dist
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
+
+      - name: List gh-pages branch root (for verification)
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          git fetch origin gh-pages || true
+          git ls-remote --heads origin
